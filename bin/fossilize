@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require "fossilize"
+require "benchmark"
+
+puts Benchmark.measure { Fossilize.create(File.new(ARGV[0]), File.new(ARGV[1])) }
+
+puts Fossilize.create(File.new(ARGV[0]), File.new(ARGV[1]))
+
+# File.write("output", Fossilize.create(File.new(ARGV[0]), File.new(ARGV[1])))
