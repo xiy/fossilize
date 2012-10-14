@@ -7,7 +7,7 @@ Deltas can be created between a Ruby File object and a String and vice-versa, so
 
 **The project is currently considered a work-in-progress.**
 
-[fossil]: http://www.fossil-scm.org]
+[fossil]: http://www.fossil-scm.org
 
 ## Why use Fossilize?
 
@@ -17,7 +17,7 @@ Here, I'll give an example. If I give the following two strings to the algorithm
 
     xiy needs to get a job!
     maybe xiy needs to get a real job!
-
+    
 It spits out the following *delta string* (I sense sarcasm in its tone):
 
     _
@@ -31,7 +31,7 @@ Git uses a similar algorithm to only store the changes to tracked files between 
 
 ### Real World Examples
 
-As a real world example, here are the differences between `github.com/ruby/array.c@e3efce` and it's previous commit (you can see the diff [here](https://github.com/ruby/ruby/commit/e3efce6df1aa691e17c59f442b35b4fd129d3a13#array.c)).
+As a real world example, here are the differences between `ruby/ruby/array.c@e3efce` and it's previous commit (you can see the diff [here](https://github.com/ruby/ruby/commit/e3efce6df1aa691e17c59f442b35b4fd129d3a13#array.c)).
 
     WBD
     N86@0,g:rb_random_ulong_limited((randgen), (max)-1)U@OvG,8:shuffle!H@OGW,_B@N9S,4:long49@Nii,F:i = RAND_UPTO(lb@NnL,4:<= iK@Nn~,N@Ntk,H:	}
@@ -44,7 +44,7 @@ As a real world example, here are the differences between `github.com/ruby/array
     	j = rnds[1];
     	k = rnds[2]40@N~E,I:rnds[0];
     	for (i=1J@OBW,B:k = rnds[i]86X@O4S,32IfMm;
-
+    	
 In terms of diffing, it wouldn't be hard to parse this delta and determine where in a file modifications took place at a *per-character level* as opposed to the traditional per-line approach.
 
 ### Things Fossilize is good at:
@@ -64,8 +64,6 @@ In terms of diffing, it wouldn't be hard to parse this delta and determine where
 
 ## Installation
 
-**NOTE: This is still a work-in-progress!**
-
 Add this line to your application's Gemfile:
 
     gem 'fossilize'
@@ -79,21 +77,21 @@ Or install it yourself as:
     $ gem install fossilize
 
 ## Licensing
-Fossilize is distributed under the MIT License.
+Fossilized is distributed under the MIT License.
 
 Fossil (and the Fossil delta encoding algorithm included within) are distributed under the Simplified BSD License/FreeBSD License:
-
-
+    
+    
     Copyright (c) 2006 D. Richard Hipp
-
+    
     This program is free software; you can redistribute it and/or
     modify it under the terms of the Simplified BSD License (also
     known as the "2-Clause License" or "FreeBSD License".)
-
+    
     This program is distributed in the hope that it will be useful,
     but without any warranty; without even the implied warranty of
     merchantability or fitness for a particular purpose.
-
+    
     Author contact information:
        drh@hwaci.com
        http://www.hwaci.com/drh/
