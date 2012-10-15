@@ -12,7 +12,7 @@ require "ffi"
 module Fossilize
   extend FFI::Library
 
-  ffi_lib "ext/fossil_delta/fossil_delta.so"
+  ffi_lib "ext/fossilize/fossil_delta.so"
 
   attach_function :delta_create, [:pointer, :int, :pointer, :int, :pointer], :int
   attach_function :delta_output_size, [:pointer, :int], :int

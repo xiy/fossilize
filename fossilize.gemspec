@@ -4,9 +4,9 @@ require File.expand_path('../lib/fossilize/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Mark Anthony Gibbins"]
   gem.email         = ["xiy3x0@gmail.com"]
-  gem.description   = %q{TODO: A ruby extension to the Fossil delta compression algorithm written
+  gem.description   = %q{A ruby extension to the Fossil delta compression algorithm written
                       by D. Richard Hipp for the Fossil SCM project.}
-  gem.summary       = %q{TODO: Delta compression for Ruby using the Fossil delta
+  gem.summary       = %q{Delta compression for Ruby using the Fossil delta
                       compression algorithm.}
   gem.homepage      = "http://github.com/xiy/fossilize"
 
