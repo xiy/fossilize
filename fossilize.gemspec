@@ -17,6 +17,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Fossilize::VERSION
 
+  gem.extensions = ['ext/fossilize/extconf.rb']
+
   gem.add_runtime_dependency('ffi')
   gem.add_runtime_dependency('digest-crc')
 

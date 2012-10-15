@@ -1,2 +1,7 @@
 require 'mkmf'
-create_makefile 'fossilize/fossil_delta'
+
+dir_config 'fossilize'
+RbConfig::MAKEFILE_CONFIG['CC'] = 'gcc'
+RbConfig::MAKEFILE_CONFIG['CXX'] = 'g++'
+
+create_makefile 'fossilize/fossilize'

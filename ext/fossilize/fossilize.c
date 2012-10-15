@@ -203,7 +203,7 @@ static unsigned int getInt(const char **pz, int *pLen){
 ** Return the number digits in the base-64 representation of a positive integer
 */
 static int digit_count(int v){
-  unsigned int i, x;
+  int i, x;
   for(i=1, x=64; v>=x; i++, x <<= 6){}
   return i;
 }
@@ -304,7 +304,7 @@ static unsigned int checksum(const char *zIn, size_t N){
 ** do not match or which can not be encoded efficiently using copy
 ** commands.
 */
-extern "C" int delta_create(
+int delta_create(
   const char *zSrc,      /* The source or pattern file */
   unsigned int lenSrc,   /* Length of the source file */
   const char *zOut,      /* The target file */
@@ -497,7 +497,7 @@ extern "C" int delta_create(
 ** for the output and hence allocate nor more space that is really
 ** needed.
 */
-extern "C" int delta_output_size(const char *zDelta, int lenDelta){
+int delta_output_size(const char *zDelta, int lenDelta){
   int size;
   size = getInt(&zDelta, &lenDelta);
   if( *zDelta!='\n' ){
@@ -528,7 +528,7 @@ extern "C" int delta_output_size(const char *zDelta, int lenDelta){
 ** Refer to the delta_create() documentation above for a description
 ** of the delta file format.
 */
-extern "C" int delta_apply(
+int delta_apply(
   const char *zSrc,      /* The source or pattern file */
   int lenSrc,            /* Length of the source file */
   const char *zDelta,    /* Delta to apply to the pattern */
@@ -544,6 +544,7 @@ extern "C" int delta_apply(
   limit = getInt(&zDelta, &lenDelta);
   if( *zDelta!='\n' ){
     /* ERROR: size integer not terminated by "\n" */
+    printf("ERROR: size integer not terminated by ""\/n""\n");
     return -1;
   }
   zDelta++; lenDelta--;
@@ -556,6 +557,7 @@ extern "C" int delta_apply(
         ofst = getInt(&zDelta, &lenDelta);
         if( lenDelta>0 && zDelta[0]!=',' ){
           /* ERROR: copy command not terminated by ',' */
+          printf("ERROR: copy command not terminated by ','\n");
           return -1;
         }
         zDelta++; lenDelta--;
@@ -563,10 +565,12 @@ extern "C" int delta_apply(
         total += cnt;
         if( total>limit ){
           /* ERROR: copy exceeds output file size */
+          printf("ERROR: copy exceeds output file size\n");
           return -1;
         }
         if( ofst+cnt > lenSrc ){
           /* ERROR: copy extends past end of input */
+          printf("ERROR: copy extends past end of input: ofst: %d, cnt: %d, lenSrc: %d \n", ofst, cnt, lenSrc);
           return -1;
         }
         memcpy(zOut, &zSrc[ofst], cnt);
@@ -578,11 +582,13 @@ extern "C" int delta_apply(
         total += cnt;
         if( total>limit ){
           /* ERROR:  insert command gives an output larger than predicted */
+          printf("ERROR:  insert command gives an output larger than predicted\n");
           return -1;
         }
         DEBUG1( printf("INSERT %d\n", cnt); )
         if( cnt>lenDelta ){
           /* ERROR: insert count exceeds size of delta */
+          printf("ERROR: insert count exceeds size of delta\n");
           return -1;
         }
         memcpy(zOut, zDelta, cnt);
@@ -602,16 +608,19 @@ extern "C" int delta_apply(
 #endif
         if( total!=limit ){
           /* ERROR: generated size does not match predicted size */
+          printf("ERROR: generated size does not match predicted size\n");
           return -1;
         }
         return total;
       }
       default: {
         /* ERROR: unknown delta operator */
+        printf("ERROR: unknown delta operator\n");
         return -1;
       }
     }
   }
   /* ERROR: unterminated delta */
+  printf("ERROR: unterminated delta\n");
   return -1;
 }

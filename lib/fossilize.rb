@@ -1,8 +1,12 @@
 require "fossilize/version"
 require "ffi"
 
-# Public: Provides an interface through Ruby-FFI to the delta encoding algorithm
-# written for the Fossil SCM project by D. Richard Hipp. All methods are module methods.
+# Accesss
+#   Public Module
+#
+# Summary
+#   Provides an interface through Ruby-FFI to the delta encoding algorithm
+#   written for the Fossil SCM project by D. Richard Hipp. All methods are module methods.
 #
 # Examples
 #
@@ -12,36 +16,38 @@ require "ffi"
 module Fossilize
   extend FFI::Library
 
-  ffi_lib "ext/fossilize/fossil_delta.so"
+  ffi_lib File.expand_path("../../ext/fossilize/fossilize.#{RbConfig::CONFIG['DLEXT']}", __FILE__)
 
   attach_function :delta_create, [:pointer, :int, :pointer, :int, :pointer], :int
   attach_function :delta_output_size, [:pointer, :int], :int
   attach_function :delta_apply, [:pointer, :int, :pointer, :int, :pointer], :int
 
 
-  # Access: Public Module Method
-
+  # Access
+  #   Public Module Method
+  #
   # Summary
   #   Creates a delta of two strings using the Fossil delta encoding algorithm.
-
+  #
   # Parameters
   #   old - The old string.
   #   new - The new string to create the delta from.
-
+  #
+  # Returns a String that represents the deltaed differences between the two Strings.
+  #
   # Examples
-
+  #
   #   # Create the delta between two strings
   #   Fossilize.create("Hello World!", "Hello Everyone!")
-
+  #
   #   # Create the delta between two files (note the passing of a File object)
   #   source = File.new("README.md", "r")
   #   target = File.new("README_new.md", "r")
   #   Fossilize.create(source, target)
-
+  #
   #   # You can also create a delta between a file and a string (the arguments are interchangeable)
   #   Fossilize(source, "This is the new README for Fossilize!")
-
-  # Returns a String that represents the deltaed differences between the two Strings.
+  #
   def self.create(source, target)
     # Because this method can accept three different types of parameter (path, String or File)
     # we need to do a sanity check on the input parameters.
@@ -64,30 +70,45 @@ module Fossilize
     return delta.strip!
   end
 
-  # Public / Module Method
+  # Access
+  #   Public Module Method
+  #
+  # Summary
   #   Applies a delta string to another string.
   #
-  # source - The old string to apply the delta string to.
-  # delta - The delta string created using *create* or *create_from_string*.
+  # Parameters
+  #   source - The old string to apply the delta string to.
+  #   delta - The delta string created using *create*.
   #
   # Returns a new unified string created by applying the delta to the source
   # if successful. The algorithm returns -1 as the output_size if the delta was
   # not created from the given source or is malformed. In this case, this method returns nil.
+  #
+  # Examples
+  #
+  #   # original is a String or File object
+  #   result = Fossilize.apply(original, delta)
+  #
   def self.apply(source, delta)
-    # Get the eventual size of the deltaed file and create a string to hold it
-    expected_output_size = delta_output_size(delta, delta_size)
+    # Check the input types first
+    source_string = check_input(source)
+    delta_string = check_input(delta)
 
-    # Check for an error returned from the algorithm
+    # Get the eventual size of the deltaed file and create a string to hold it
+    expected_output_size = delta_output_size(delta_string, delta_string.size)
+    puts "expected = #{expected_output_size}"
+
+    # The algorithm will return -1 as the output size if there was an error
     if expected_output_size == -1
       raise MalformedDeltaError, "Was this delta intended for this string/file?"
       return nil
     end
 
     # Create an empty string that is at-least the output_size given by *delta_output_size*
-    output = ' ' * output_size
+    output = "\0" * expected_output_size
 
     # Apply the delta to the old file to produce the merged result
-    output_size = delta_apply(source, source.size, delta, delta.size, output)
+    output_size = delta_apply(source_string, source_string.size, delta_string, delta_string.size, output)
 
     if output_size != expected_output_size
       raise DeltaApplicationError,
@@ -98,10 +119,17 @@ module Fossilize
     return output.strip!
   end
 
-  # Private: checks that the input given to the delta methods is sane, i.e. can it be passed
-  # to the C-extension without any problems? The algorithm itself expects a String no matter what.
+  private
+
+  # Access
+  #   Private Module Method
   #
-  # input - The input to perform the sanity check on.
+  # Summary
+  #   checks that the input given to the delta methods is sane, i.e. can it be passed
+  #   to the C-extension without any problems? The algorithm itself expects a String no matter what.
+  #
+  # Parameters
+  #   input - The input to perform the sanity check on.
   #
   # Returns a String as read from a File object (either through a path or a File object) or a
   # direct String as passed to the calling method.
