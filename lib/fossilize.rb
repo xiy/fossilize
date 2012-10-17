@@ -54,20 +54,14 @@ module Fossilize
     source_string = check_input(source)
     target_string = check_input(target)
 
-    # Create native memory buffers for the input Strings.
-    source_ptr = FFI::MemoryPointer.new(:char, source_string.size)
-    source_ptr.put_bytes(0, source_string)
-    target_ptr = FFI::MemoryPointer.new(:char, target_string.size)
-    target_ptr.put_bytes(0, target_string)
-
     # Create a bare string to hold to returning delta from the C function that's the
     # size of the target + 60 (according to the Fossil source docs).
-    delta = (' ' * (target_string.size + 60))
+    delta = ("\0" * (target_string.size + 60))
 
     # create the delta, retaining the size of the delta output and return the delta,
     # stripping out any excess left over (needs refinement...).
-    delta_size = delta_create(source_ptr, source_ptr.size, target_ptr, target_ptr.size, delta)
-    return delta.strip!
+    delta_size = delta_create(source_string, source_string.size, target_string, target_string.size, delta)
+    return delta.rstrip!
   end
 
   # Access
@@ -96,7 +90,6 @@ module Fossilize
 
     # Get the eventual size of the deltaed file and create a string to hold it
     expected_output_size = delta_output_size(delta_string, delta_string.size)
-    puts "expected = #{expected_output_size}"
 
     # The algorithm will return -1 as the output size if there was an error
     if expected_output_size == -1
@@ -116,7 +109,7 @@ module Fossilize
       return nil
     end
 
-    return output.strip!
+    return output
   end
 
   private
