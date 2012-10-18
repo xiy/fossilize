@@ -2,8 +2,28 @@
 
 require "fossilize"
 
-delta = Fossilize.create(ARGV[0], ARGV[1])
-output = Fossilize.apply(ARGV[0], delta)
+usage = "usage: fossilize <create|apply> old_version <new_version|delta_string>"
 
-File.write("fossilized_#{ARGV[0]}", output)
+if ARGV.size < 2
+  puts usage
+  exit -1
+end
 
+old_version = ARGV[1]
+new_or_delta = ARGV[2]
+
+if ARGV[0] == "create"
+  delta = Fossilize.create(old_version, new_or_delta)
+  File.write("#{old_version}.delta", delta)
+  puts "Wrote delta string to: #{old_version}.fdelta\n\n"
+  puts delta
+  exit 0
+elsif ARGV[0] == "apply"
+  result = Fossilize.apply(old_version, new_or_delta)
+  File.write("#{old_version}.fossilized", result)
+  puts "Wrote new version to: #{old_version}.fossilized"
+  exit 0
+else
+  puts usage
+  exit -1
+end
