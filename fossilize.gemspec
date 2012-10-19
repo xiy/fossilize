@@ -20,8 +20,5 @@ Gem::Specification.new do |gem|
   gem.extensions = ['ext/fossilize/extconf.rb']
 
   gem.add_runtime_dependency('ffi')
-  gem.add_runtime_dependency('digest-crc')
-
   gem.add_development_dependency('rspec', '2.8.0')
-  gem.add_development_dependency('tomdoc')
 end
