@@ -31,7 +31,7 @@ Git uses a similar algorithm to only store the changes to tracked files between 
 
 ### Real World Examples
 
-As a real world example, here are the differences between `ruby/ruby/array.c@e3efce` and it's previous commit (you can see the diff [here](https://github.com/ruby/ruby/commit/e3efce6df1aa691e17c59f442b35b4fd129d3a13#array.c)).
+As a real world example, here are the differences between `ruby/ruby/array.c@e3efce` and its previous commit (you can see the diff [here](https://github.com/ruby/ruby/commit/e3efce6df1aa691e17c59f442b35b4fd129d3a13#array.c)).
 
     WBD
     N86@0,g:rb_random_ulong_limited((randgen), (max)-1)U@OvG,8:shuffle!H@OGW,_B@N9S,4:long49@Nii,F:i = RAND_UPTO(lb@NnL,4:<= iK@Nn~,N@Ntk,H:	}
@@ -56,7 +56,7 @@ In terms of diffing, it wouldn't be hard to parse this delta and determine where
 ### Things Fossilize is *not* good at:
 
 1. Comparing differences between two almost completely different pieces of data (see [Wikipedia][de]).
-2. Binary diffing - while it can successfully create and apply binary patches, there are algorithms and tools better designed for these types of files. `bsdiff` will create a 2kb diff whereas Fossilize will create a 4kb diff. This is probably due to the fact that the algorithm uses base64 encoding of plain-text which ends up with binary artefacts popping up in the diff. Although they don't make it into the output, it's obviously better to use something like bsdiff. It would however be possible to modify the algorithm to use a different "mode" for binary files that uses binary encoding instead.
+2. Binary diffing - while it can successfully create and apply binary patches, there are algorithms and tools better designed for these types of files. `bsdiff` will create a 2kb diff whereas Fossilize will create a 4kb diff. This is probably due to the fact that the algorithm uses base64 encoding of plain-text which ends up with binary artefacts popping up in the diff. Although they don't make it into the output, it's obviously better to use something like bsdiff. It would, however, be possible to modify the algorithm to use a different "mode" for binary files that uses binary encoding instead.
 
 
 [de]: http://en.wikipedia.org/wiki/Delta_encoding
